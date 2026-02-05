@@ -32,6 +32,11 @@ class ApiClient {
   private async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { method = 'GET', body, headers = {} } = options;
 
+    // Refresh token from localStorage if needed (client-side)
+    if (!this.accessToken && typeof window !== 'undefined') {
+      this.accessToken = localStorage.getItem('lifehub_token');
+    }
+
     const requestHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
       ...headers,

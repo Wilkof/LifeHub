@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Header from '@/app/components/layout/Header';
 import Card from '@/app/components/ui/Card';
+import { api } from '@/app/lib/api';
 import { cn, moodEmojis } from '@/app/lib/utils';
 import {
   Moon,
@@ -22,34 +23,74 @@ interface PageProps {
 export default function HealthPage({ params: { locale } }: PageProps) {
   const t = useTranslations('health');
   const [todayData, setTodayData] = useState({
-    sleep_hours: 7.5,
-    sleep_quality: 4,
-    water_glasses: 5,
-    mood: 4,
+    sleep_hours: 0,
+    sleep_quality: 3,
+    water_glasses: 0,
+    mood: 3,
     energy: 3,
   });
+  const [error, setError] = useState<string | null>(null);
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+
+  const loadToday = async () => {
+    setError(null);
+    try {
+      const data = await api.getTodayHealth();
+      if (data) {
+        setTodayData({
+          sleep_hours: data.sleep_hours ?? 0,
+          sleep_quality: data.sleep_quality ?? 3,
+          water_glasses: data.water_glasses ?? 0,
+          mood: data.mood ?? 3,
+          energy: data.energy_level ?? 3,
+        });
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Помилка завантаження здоровʼя');
+    }
+  };
+
+  useEffect(() => {
+    loadToday();
+  }, []);
 
   const addWater = () => {
-    setTodayData((prev) => ({
-      ...prev,
-      water_glasses: Math.min(prev.water_glasses + 1, 20),
-    }));
+    api.addWater(1)
+      .then((res: any) => {
+        setTodayData((prev) => ({ ...prev, water_glasses: res.water_glasses ?? prev.water_glasses + 1 }));
+      })
+      .catch((err: any) => setError(err?.message || 'Не вдалося додати воду'));
   };
 
   const removeWater = () => {
-    setTodayData((prev) => ({
-      ...prev,
-      water_glasses: Math.max(prev.water_glasses - 1, 0),
-    }));
+    const next = Math.max(todayData.water_glasses - 1, 0);
+    api.updateHealthLog(todayIso, { water_glasses: next })
+      .then(() => setTodayData((prev) => ({ ...prev, water_glasses: next })))
+      .catch((err: any) => setError(err?.message || 'Не вдалося оновити воду'));
   };
 
   const setMood = (mood: number) => {
-    setTodayData((prev) => ({ ...prev, mood }));
+    api.updateHealthLog(todayIso, { mood })
+      .then(() => setTodayData((prev) => ({ ...prev, mood })))
+      .catch((err: any) => setError(err?.message || 'Не вдалося оновити настрій'));
+  };
+
+  const setEnergy = (energy: number) => {
+    api.updateHealthLog(todayIso, { energy_level: energy })
+      .then(() => setTodayData((prev) => ({ ...prev, energy })))
+      .catch((err: any) => setError(err?.message || 'Не вдалося оновити енергію'));
   };
 
   return (
     <div className="max-w-4xl">
       <Header locale={locale} title={t('title')} />
+
+      {error && (
+        <Card className="mb-4 border border-red-200 bg-red-50 text-red-700">
+          {error}
+        </Card>
+      )}
 
       <div className="grid grid-cols-2 gap-6">
         {/* Sleep Card */}
@@ -188,9 +229,7 @@ export default function HealthPage({ params: { locale } }: PageProps) {
             {[1, 2, 3, 4, 5].map((energy) => (
               <button
                 key={energy}
-                onClick={() =>
-                  setTodayData((prev) => ({ ...prev, energy }))
-                }
+                onClick={() => setEnergy(energy)}
                 className={cn(
                   'flex-1 h-20 mx-1 rounded-xl flex items-end justify-center pb-2 transition-all',
                   todayData.energy >= energy

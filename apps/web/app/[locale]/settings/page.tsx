@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Header from '@/app/components/layout/Header';
 import Card from '@/app/components/ui/Card';
 import { cn } from '@/app/lib/utils';
+import { api } from '@/app/lib/api';
 import {
   User,
   Globe,
@@ -38,19 +39,59 @@ export default function SettingsPage({ params: { locale } }: PageProps) {
     theme: 'light',
     accent_color: '#c8e972',
   });
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (key: string, value: any) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
-    // TODO: Call API to save settings
-    console.log('Saving settings:', settings);
+  const loadSettings = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.getSettings();
+      setSettings((prev) => ({ ...prev, ...data }));
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося завантажити налаштування');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const handleSave = async () => {
+    setMessage(null);
+    setError(null);
+    try {
+      await api.updateSettings(settings);
+      setMessage('Налаштування збережено.');
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося зберегти налаштування');
+    }
   };
 
   return (
     <div className="max-w-3xl">
       <Header locale={locale} title={t('title')} />
+
+      {loading && (
+        <Card className="mb-4 text-center py-6">Завантаження...</Card>
+      )}
+      {error && (
+        <Card className="mb-4 border border-red-200 bg-red-50 text-red-700">
+          {error}
+        </Card>
+      )}
+      {message && (
+        <Card className="mb-4 border border-green-200 bg-green-50 text-green-700">
+          {message}
+        </Card>
+      )}
 
       <div className="space-y-6">
         {/* Profile Section */}

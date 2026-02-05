@@ -4,6 +4,7 @@ import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n';
 import Sidebar from '@/app/components/layout/Sidebar';
+import AccessTokenBanner from '@/app/components/layout/AccessTokenBanner';
 import '@/app/globals.css';
 
 interface LocaleLayoutProps {
@@ -45,6 +46,7 @@ export default async function LocaleLayout({
 
             {/* Main Content */}
             <main className="flex-1 ml-20 min-h-screen p-6">
+              <AccessTokenBanner />
               {children}
             </main>
           </div>

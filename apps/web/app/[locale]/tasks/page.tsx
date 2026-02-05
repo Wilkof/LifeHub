@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Header from '@/app/components/layout/Header';
 import Card from '@/app/components/ui/Card';
 import Tabs from '@/app/components/ui/Tabs';
+import { api } from '@/app/lib/api';
 import { cn, priorityColors, statusColors } from '@/app/lib/utils';
 import {
   Plus,
@@ -20,59 +21,23 @@ interface PageProps {
   params: { locale: string };
 }
 
-// Mock tasks data
-const mockTasks = [
-  {
-    id: 1,
-    title: 'Завершити дизайн дашборду',
-    status: 'in_progress',
-    priority: 'high',
-    is_mit: true,
-    due_date: '2026-02-06',
-    tags: ['design', 'frontend'],
-  },
-  {
-    id: 2,
-    title: 'Написати документацію API',
-    status: 'todo',
-    priority: 'medium',
-    is_mit: true,
-    due_date: '2026-02-07',
-    tags: ['docs', 'backend'],
-  },
-  {
-    id: 3,
-    title: 'Налаштувати CI/CD',
-    status: 'todo',
-    priority: 'high',
-    is_mit: false,
-    due_date: '2026-02-08',
-    tags: ['devops'],
-  },
-  {
-    id: 4,
-    title: 'Тестування Telegram бота',
-    status: 'done',
-    priority: 'medium',
-    is_mit: false,
-    due_date: '2026-02-05',
-    tags: ['telegram', 'testing'],
-  },
-  {
-    id: 5,
-    title: 'Оптимізувати запити до БД',
-    status: 'backlog',
-    priority: 'low',
-    is_mit: false,
-    due_date: null,
-    tags: ['backend', 'optimization'],
-  },
-];
+interface TaskItem {
+  id: number;
+  title: string;
+  status: string;
+  priority: string;
+  is_mit: boolean;
+  due_date?: string | null;
+  tags?: string[];
+}
 
 export default function TasksPage({ params: { locale } }: PageProps) {
   const t = useTranslations('tasks');
   const [activeTab, setActiveTab] = useState('all');
-  const [tasks, setTasks] = useState(mockTasks);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [newTitle, setNewTitle] = useState('');
 
   const tabs = [
     { key: 'all', label: 'Всі' },
@@ -82,21 +47,61 @@ export default function TasksPage({ params: { locale } }: PageProps) {
     { key: 'done', label: 'Виконані' },
   ];
 
+  const loadTasks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.getTasks();
+      setTasks(data);
+    } catch (err: any) {
+      setError(err?.message || 'Помилка завантаження задач');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
   const filteredTasks = tasks.filter((task) => {
     if (activeTab === 'all') return task.status !== 'done';
     if (activeTab === 'mit') return task.is_mit;
-    if (activeTab === 'today') return task.due_date === '2026-02-05';
+    if (activeTab === 'today') return task.due_date;
     return task.status === activeTab;
   });
 
-  const toggleComplete = (taskId: number) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId
-          ? { ...task, status: task.status === 'done' ? 'todo' : 'done' }
-          : task
-      )
-    );
+  const toggleComplete = async (task: TaskItem) => {
+    try {
+      if (task.status === 'done') {
+        await api.updateTask(task.id, { status: 'todo' });
+      } else {
+        await api.completeTask(task.id);
+      }
+      await loadTasks();
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося оновити задачу');
+    }
+  };
+
+  const toggleMit = async (taskId: number) => {
+    try {
+      await api.toggleMit(taskId);
+      await loadTasks();
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося оновити MIT');
+    }
+  };
+
+  const addTask = async () => {
+    if (!newTitle.trim()) return;
+    try {
+      await api.createTask({ title: newTitle.trim() });
+      setNewTitle('');
+      await loadTasks();
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося створити задачу');
+    }
   };
 
   return (
@@ -106,19 +111,41 @@ export default function TasksPage({ params: { locale } }: PageProps) {
       {/* Actions bar */}
       <div className="flex items-center justify-between mb-6">
         <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
-        <button className="btn btn-primary flex items-center gap-2">
+        <button className="btn btn-primary flex items-center gap-2" onClick={addTask}>
           <Plus className="w-4 h-4" />
           {t('newTask')}
         </button>
       </div>
 
+      <Card className="mb-4">
+        <div className="flex gap-3">
+          <input
+            className="input flex-1"
+            placeholder={t('taskTitle')}
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addTask()}
+          />
+          <button className="btn btn-primary" onClick={addTask}>
+            {t('add')}
+          </button>
+        </div>
+      </Card>
+
+      {error && (
+        <Card className="mb-4 border border-red-200 bg-red-50 text-red-700">
+          {error}
+        </Card>
+      )}
+
       {/* Tasks list */}
       <div className="space-y-3">
+        {loading && <Card className="text-center py-8">Завантаження...</Card>}
         {filteredTasks.map((task) => (
           <Card key={task.id} className="flex items-center gap-4 p-4">
             {/* Checkbox */}
             <button
-              onClick={() => toggleComplete(task.id)}
+              onClick={() => toggleComplete(task)}
               className="flex-shrink-0"
             >
               {task.status === 'done' ? (
@@ -129,7 +156,7 @@ export default function TasksPage({ params: { locale } }: PageProps) {
             </button>
 
             {/* MIT star */}
-            <button className="flex-shrink-0">
+            <button className="flex-shrink-0" onClick={() => toggleMit(task.id)}>
               <Star
                 className={cn(
                   'w-5 h-5',
@@ -173,20 +200,20 @@ export default function TasksPage({ params: { locale } }: PageProps) {
             <span
               className={cn(
                 'pill text-xs',
-                priorityColors[task.priority as keyof typeof priorityColors]
+                priorityColors[task.priority as keyof typeof priorityColors] || 'bg-gray-100 text-gray-800'
               )}
             >
-              {t(`priorities.${task.priority}`)}
+              {t(`priorities.${task.priority}`) || task.priority}
             </span>
 
             {/* Status badge */}
             <span
               className={cn(
                 'pill text-xs',
-                statusColors[task.status as keyof typeof statusColors]
+                statusColors[task.status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'
               )}
             >
-              {t(`statuses.${task.status}`)}
+              {t(`statuses.${task.status}`) || task.status}
             </span>
 
             {/* More menu */}

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Header from '@/app/components/layout/Header';
 import Card from '@/app/components/ui/Card';
+import { api } from '@/app/lib/api';
 import { cn } from '@/app/lib/utils';
 import { Plus, Check, Flame, MoreHorizontal } from 'lucide-react';
 
@@ -11,14 +12,15 @@ interface PageProps {
   params: { locale: string };
 }
 
-const mockHabits = [
-  { id: 1, name: 'Медитація', icon: '🧘', color: '#8b5cf6', streak: 12, completed: true },
-  { id: 2, name: 'Читання', icon: '📚', color: '#3b82f6', streak: 7, completed: false },
-  { id: 3, name: 'Спорт', icon: '💪', color: '#10b981', streak: 5, completed: true },
-  { id: 4, name: 'Вода (8 склянок)', icon: '💧', color: '#06b6d4', streak: 14, completed: false },
-  { id: 5, name: 'Без соцмереж до 12:00', icon: '📵', color: '#f59e0b', streak: 3, completed: true },
-  { id: 6, name: 'Щоденник', icon: '📝', color: '#ec4899', streak: 21, completed: false },
-];
+interface HabitItem {
+  id: number;
+  name: string;
+  icon: string;
+  color: string;
+  completed: boolean;
+  current_streak?: number;
+  preferred_time?: string | null;
+}
 
 // Generate week calendar
 const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
@@ -35,12 +37,50 @@ const weekData = Array.from({ length: 7 }, (_, i) => {
 
 export default function HabitsPage({ params: { locale } }: PageProps) {
   const t = useTranslations('habits');
-  const [habits, setHabits] = useState(mockHabits);
+  const [habits, setHabits] = useState<HabitItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [newHabitName, setNewHabitName] = useState('');
 
-  const toggleHabit = (id: number) => {
-    setHabits((prev) =>
-      prev.map((h) => (h.id === id ? { ...h, completed: !h.completed } : h))
-    );
+  const loadHabits = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.getTodayHabits();
+      setHabits(data);
+    } catch (err: any) {
+      setError(err?.message || 'Помилка завантаження звичок');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadHabits();
+  }, []);
+
+  const toggleHabit = async (habit: HabitItem) => {
+    try {
+      if (habit.completed) {
+        await api.uncompleteHabit(habit.id);
+      } else {
+        await api.completeHabit(habit.id);
+      }
+      await loadHabits();
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося оновити звичку');
+    }
+  };
+
+  const addHabit = async () => {
+    if (!newHabitName.trim()) return;
+    try {
+      await api.createHabit({ name: newHabitName.trim() });
+      setNewHabitName('');
+      await loadHabits();
+    } catch (err: any) {
+      setError(err?.message || 'Не вдалося створити звичку');
+    }
   };
 
   const completedCount = habits.filter((h) => h.completed).length;
@@ -77,14 +117,36 @@ export default function HabitsPage({ params: { locale } }: PageProps) {
           <span className="font-bold">{completedCount}</span>
           <span className="text-dark-500"> / {habits.length} {t('completed')}</span>
         </div>
-        <button className="btn btn-primary flex items-center gap-2">
+        <button className="btn btn-primary flex items-center gap-2" onClick={addHabit}>
           <Plus className="w-4 h-4" />
           {t('newHabit')}
         </button>
       </div>
 
+      <Card className="mb-4">
+        <div className="flex gap-3">
+          <input
+            className="input flex-1"
+            placeholder={t('newHabit')}
+            value={newHabitName}
+            onChange={(e) => setNewHabitName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addHabit()}
+          />
+          <button className="btn btn-primary" onClick={addHabit}>
+            {t('add')}
+          </button>
+        </div>
+      </Card>
+
+      {error && (
+        <Card className="mb-4 border border-red-200 bg-red-50 text-red-700">
+          {error}
+        </Card>
+      )}
+
       {/* Habits list */}
       <div className="space-y-3">
+        {loading && <Card className="text-center py-8">Завантаження...</Card>}
         {habits.map((habit) => (
           <Card
             key={habit.id}
@@ -92,7 +154,7 @@ export default function HabitsPage({ params: { locale } }: PageProps) {
           >
             {/* Checkbox */}
             <button
-              onClick={() => toggleHabit(habit.id)}
+              onClick={() => toggleHabit(habit)}
               className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all',
                 habit.completed
@@ -115,7 +177,7 @@ export default function HabitsPage({ params: { locale } }: PageProps) {
               <div className="font-medium">{habit.name}</div>
               <div className="flex items-center gap-2 text-sm text-dark-500">
                 <Flame className="w-4 h-4 text-orange-500" />
-                <span>{habit.streak} {t('days')} {t('streak')}</span>
+                <span>{habit.current_streak ?? 0} {t('days')} {t('streak')}</span>
               </div>
             </div>
 

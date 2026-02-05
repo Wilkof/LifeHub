@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Header from '@/app/components/layout/Header';
 import RightSidebar from '@/app/components/layout/RightSidebar';
-import Card, { StatCard, PromoCard } from '@/app/components/ui/Card';
-import Tabs from '@/app/components/ui/Tabs';
-import ChartBar, { ChartYAxis, ChartLegend } from '@/app/components/ui/Chart';
-import { Settings as SettingsIcon, ArrowDownUp, TrendingUp } from 'lucide-react';
+import Card, { StatCard } from '@/app/components/ui/Card';
+import { api } from '@/app/lib/api';
+import { cn } from '@/app/lib/utils';
+import { Calendar, CheckCircle2, Flame, Droplets, Bot } from 'lucide-react';
 
 interface PageProps {
   params: { locale: string };
@@ -15,100 +15,131 @@ interface PageProps {
 
 export default function DashboardPage({ params: { locale } }: PageProps) {
   const t = useTranslations('dashboard');
-  const tNav = useTranslations('nav');
-  const [activeTab, setActiveTab] = useState('organization');
+  const [data, setData] = useState<any>(null);
+  const [briefing, setBriefing] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const tabs = [
-    { key: 'organization', label: 'Organization' },
-    { key: 'teams', label: 'Teams' },
-    { key: 'users', label: 'Users' },
-    { key: 'subscription', label: 'Subscription' },
-    { key: 'payment', label: 'Payment' },
-    { key: 'apps', label: 'Installed Apps' },
-    { key: 'variables', label: 'Variables' },
-    { key: 'properties', label: 'Scenario Properties' },
-  ];
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.getDashboardToday();
+      setData(res);
+    } catch (err: any) {
+      setError(err?.message || 'Помилка завантаження');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Mock chart data
-  const chartData = [
-    { label: '27 Jun', value1: 0.3, value2: 0.2 },
-    { label: '28 Jun', value1: 0.55, value2: 0.35 },
-    { label: '29 Jun', value1: 0.5, value2: 0.25 },
-    { label: '30 Jun', value1: 0.45, value2: 0.3, percentage: 32 },
-    { label: '1 Jul', value1: 0.85, value2: 0.7, percentage: 87 },
-    { label: '2 Jul', value1: 0.65, value2: 0.45 },
-    { label: '3 Jul', value1: 0.55, value2: 0.4 },
-    { label: '4 Jul', value1: 0.5, value2: 0.35 },
-  ];
+  const loadBriefing = async () => {
+    try {
+      const res = await api.getDailyBriefing();
+      setBriefing(res?.briefing || '');
+    } catch (err) {
+      setBriefing('Не вдалося згенерувати брифінг.');
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   return (
     <div className="flex gap-6">
       {/* Main Content */}
       <div className="flex-1">
-        <Header locale={locale} title="Managing ⚙ Your Team and ✨ Workflows" />
+        <Header locale={locale} title="LifeHub Dashboard" />
 
-        {/* Tabs */}
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onChange={setActiveTab}
-          className="mb-8"
-        />
+        {error && (
+          <Card className="mb-6 border border-red-200 bg-red-50 text-red-700">
+            {error}
+          </Card>
+        )}
 
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-6 mb-8">
-          {/* Operations Card */}
           <StatCard
-            title="Operations"
-            value="780"
-            subtitle="/ 1 000"
-            percentage={82}
-            icon={<SettingsIcon className="w-4 h-4" />}
-            bars={[0.7, 0.8, 0.9, 0.85, 0.75, 0.8]}
+            title="Задачі"
+            value={data?.stats?.completed_today ?? 0}
+            subtitle={`/ ${data?.stats?.total_pending ?? 0}`}
+            percentage={undefined}
+            icon={<CheckCircle2 className="w-4 h-4" />}
+            bars={[0.2, 0.4, 0.6, 0.8, 0.7, 0.5]}
           />
 
-          {/* Data Transfer Card */}
           <StatCard
-            title="Data Transfer"
-            value="163"
-            subtitle="/ 512.0 MB"
-            percentage={68}
+            title="Звички"
+            value={data?.stats?.habits_completed ?? 0}
+            subtitle={`/ ${data?.stats?.habits_total ?? 0}`}
             variant="lime"
-            icon={<ArrowDownUp className="w-4 h-4" />}
-            bars={[0.5, 0.6, 0.7, 0.65, 0.55, 0.6]}
+            icon={<Flame className="w-4 h-4" />}
+            bars={[0.3, 0.5, 0.7, 0.6, 0.8, 0.4]}
           />
 
-          {/* Promo Card */}
-          <PromoCard
-            title="Take Your ↗ Automation to the Next Level"
-            buttonText="Upgrade"
+          <StatCard
+            title="Вода"
+            value={data?.health?.water_glasses ?? 0}
+            subtitle="склянок"
+            icon={<Droplets className="w-4 h-4" />}
+            bars={[0.1, 0.2, 0.3, 0.4, 0.6, 0.8]}
           />
         </div>
 
-        {/* Statistics Section */}
-        <Card className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <TrendingUp className="w-5 h-5 text-dark-600" />
-              <h2 className="text-xl font-bold">Statistics</h2>
-              <ChartLegend
-                items={[
-                  { color: '#262626', label: 'Operations' },
-                  { color: '#c8e972', label: 'Data transfer' },
-                ]}
-              />
+        {/* Main Sections */}
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <Card>
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle2 className="w-5 h-5 text-dark-600" />
+              <h2 className="text-lg font-semibold">{t('mit')}</h2>
             </div>
-            <select className="input w-32">
-              <option>2025</option>
-              <option>2024</option>
-            </select>
-          </div>
+            {data?.mit_tasks?.length ? (
+              <ul className="space-y-2">
+                {data.mit_tasks.map((task: any) => (
+                  <li key={task.id} className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-lime-500" />
+                    <span>{task.title}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-sm text-dark-500">{t('mitEmpty')}</div>
+            )}
+          </Card>
 
-          <div className="flex">
-            <ChartYAxis labels={['1.0', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1']} />
-            <div className="flex-1">
-              <ChartBar data={chartData} maxValue={1} />
+          <Card>
+            <div className="flex items-center gap-2 mb-4">
+              <Calendar className="w-5 h-5 text-dark-600" />
+              <h2 className="text-lg font-semibold">{t('todayTasks')}</h2>
             </div>
+            {data?.today_tasks?.length ? (
+              <ul className="space-y-2">
+                {data.today_tasks.map((task: any) => (
+                  <li key={task.id} className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-dark-400" />
+                    <span>{task.title}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-sm text-dark-500">{t('noTasks')}</div>
+            )}
+          </Card>
+        </div>
+
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Bot className="w-5 h-5 text-dark-600" />
+              <h2 className="text-lg font-semibold">Daily Briefing</h2>
+            </div>
+            <button className="btn btn-secondary" onClick={loadBriefing}>
+              Згенерувати
+            </button>
+          </div>
+          <div className={cn('text-sm text-dark-700', !briefing && 'text-dark-400')}>
+            {briefing || 'Натисніть “Згенерувати”, щоб отримати AI-брифінг.'}
           </div>
         </Card>
       </div>
