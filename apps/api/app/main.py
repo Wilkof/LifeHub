@@ -16,9 +16,9 @@ async def lifespan(app: FastAPI):
     # Startup
     print(f"Starting LifeHub API ({settings.app_env})")
     
-    # Initialize database
-    Base.metadata.create_all(bind=engine)
-    print("Database initialized")
+    # NOTE: Do not auto-create tables here to avoid race conditions
+    # with multiple workers in production. Run init_db once via
+    # `python -c "from app.database import init_db; init_db()"`.
     
     # Start scheduler
     scheduler_service.start()
