@@ -1,0 +1,202 @@
+{
+  "common": {
+    "appName": "LifeHub",
+    "loading": "Завантаження...",
+    "error": "Помилка",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "add": "Додати",
+    "search": "Пошук",
+    "filter": "Фільтр",
+    "all": "Всі",
+    "today": "Сьогодні",
+    "yesterday": "Вчора",
+    "tomorrow": "Завтра",
+    "week": "Тиждень",
+    "month": "Місяць",
+    "year": "Рік"
+  },
+  "nav": {
+    "today": "Сьогодні",
+    "tasks": "Задачі",
+    "calendar": "Календар",
+    "finances": "Фінанси",
+    "health": "Здоров'я",
+    "habits": "Звички",
+    "goals": "Цілі",
+    "notes": "Нотатки",
+    "ai": "AI Асистент",
+    "analytics": "Аналітика",
+    "settings": "Налаштування"
+  },
+  "dashboard": {
+    "greeting": "Привіт",
+    "todayIs": "Сьогодні",
+    "mit": "Головні пріоритети",
+    "mitEmpty": "Додай до 3 найважливіших задач",
+    "todayTasks": "Задачі на сьогодні",
+    "noTasks": "Немає активних задач",
+    "events": "Події",
+    "noEvents": "Немає подій на сьогодні",
+    "habits": "Звички",
+    "health": "Здоров'я",
+    "water": "Вода",
+    "glasses": "склянок",
+    "sleep": "Сон",
+    "hours": "год",
+    "mood": "Настрій",
+    "completed": "Виконано",
+    "pending": "Залишилось",
+    "weeklyOverview": "Огляд тижня"
+  },
+  "tasks": {
+    "title": "Задачі",
+    "newTask": "Нова задача",
+    "addTask": "Додати задачу",
+    "taskTitle": "Назва задачі",
+    "description": "Опис",
+    "dueDate": "Дедлайн",
+    "priority": "Пріоритет",
+    "status": "Статус",
+    "tags": "Теги",
+    "project": "Проєкт",
+    "markAsMit": "Зробити пріоритетом",
+    "complete": "Завершити",
+    "priorities": {
+      "low": "Низький",
+      "medium": "Середній",
+      "high": "Високий",
+      "urgent": "Терміновий"
+    },
+    "statuses": {
+      "backlog": "Бэклог",
+      "todo": "До виконання",
+      "in_progress": "В процесі",
+      "done": "Виконано"
+    }
+  },
+  "calendar": {
+    "title": "Календар",
+    "newEvent": "Нова подія",
+    "event": "Подія",
+    "allDay": "Весь день",
+    "startTime": "Початок",
+    "endTime": "Кінець",
+    "location": "Місце",
+    "reminder": "Нагадування",
+    "repeat": "Повторення",
+    "weekView": "Тиждень",
+    "monthView": "Місяць"
+  },
+  "finances": {
+    "title": "Фінанси",
+    "income": "Дохід",
+    "expenses": "Витрати",
+    "balance": "Баланс",
+    "budget": "Бюджет",
+    "budgets": "Бюджети",
+    "transactions": "Транзакції",
+    "subscriptions": "Підписки",
+    "newTransaction": "Нова транзакція",
+    "amount": "Сума",
+    "category": "Категорія",
+    "date": "Дата",
+    "spent": "Витрачено",
+    "remaining": "Залишок",
+    "overBudget": "Перевищено бюджет"
+  },
+  "health": {
+    "title": "Здоров'я",
+    "sleep": "Сон",
+    "water": "Вода",
+    "mood": "Настрій",
+    "energy": "Енергія",
+    "weight": "Вага",
+    "addWater": "Додати воду",
+    "logSleep": "Записати сон",
+    "logMood": "Записати настрій",
+    "sleepQuality": "Якість сну",
+    "moods": {
+      "1": "Жахливо",
+      "2": "Погано",
+      "3": "Нормально",
+      "4": "Добре",
+      "5": "Чудово"
+    }
+  },
+  "habits": {
+    "title": "Звички",
+    "newHabit": "Нова звичка",
+    "streak": "Серія",
+    "days": "днів",
+    "completed": "Виконано",
+    "frequency": "Частота",
+    "daily": "Щодня",
+    "weekdays": "Будні",
+    "weekends": "Вихідні",
+    "custom": "Вибрані дні"
+  },
+  "goals": {
+    "title": "Цілі",
+    "newGoal": "Нова ціль",
+    "progress": "Прогрес",
+    "shortTerm": "Короткострокові",
+    "longTerm": "Довгострокові",
+    "milestones": "Етапи",
+    "keyResults": "Ключові результати",
+    "startDate": "Дата початку",
+    "targetDate": "Цільова дата",
+    "motivation": "Мотивація"
+  },
+  "notes": {
+    "title": "Нотатки",
+    "newNote": "Нова нотатка",
+    "journal": "Щоденник",
+    "inbox": "Інбокс",
+    "ideas": "Ідеї",
+    "quickNote": "Швидка нотатка",
+    "pinned": "Закріплені",
+    "starred": "Обрані"
+  },
+  "ai": {
+    "title": "AI Асистент",
+    "placeholder": "Запитай щось...",
+    "modes": {
+      "general": "Загальний",
+      "planDay": "План дня",
+      "breakGoal": "Розбити ціль",
+      "weekSummary": "Підсумок тижня",
+      "antiProcrastination": "Антипрокрастинація"
+    },
+    "generating": "Генерую відповідь..."
+  },
+  "settings": {
+    "title": "Налаштування",
+    "profile": "Профіль",
+    "language": "Мова",
+    "timezone": "Часовий пояс",
+    "notifications": "Сповіщення",
+    "telegram": "Telegram",
+    "weather": "Погода",
+    "city": "Місто",
+    "theme": "Тема",
+    "morningBriefing": "Ранковий брифінг",
+    "middayReminder": "Денне нагадування",
+    "eveningCheckin": "Вечірній чек-ін",
+    "weeklyReview": "Тижневий огляд"
+  },
+  "weather": {
+    "feelsLike": "Відчувається як",
+    "humidity": "Вологість",
+    "wind": "Вітер"
+  },
+  "sidebar": {
+    "helpCenter": "Центр допомоги",
+    "helpDesc": "Документація та FAQ",
+    "community": "Спільнота",
+    "updates": "Оновлення",
+    "updatesDesc": "Що нового в LifeHub"
+  }
+}

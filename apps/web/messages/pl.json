@@ -1,0 +1,202 @@
+{
+  "common": {
+    "appName": "LifeHub",
+    "loading": "Ładowanie...",
+    "error": "Błąd",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "add": "Dodaj",
+    "search": "Szukaj",
+    "filter": "Filtr",
+    "all": "Wszystko",
+    "today": "Dzisiaj",
+    "yesterday": "Wczoraj",
+    "tomorrow": "Jutro",
+    "week": "Tydzień",
+    "month": "Miesiąc",
+    "year": "Rok"
+  },
+  "nav": {
+    "today": "Dzisiaj",
+    "tasks": "Zadania",
+    "calendar": "Kalendarz",
+    "finances": "Finanse",
+    "health": "Zdrowie",
+    "habits": "Nawyki",
+    "goals": "Cele",
+    "notes": "Notatki",
+    "ai": "Asystent AI",
+    "analytics": "Analityka",
+    "settings": "Ustawienia"
+  },
+  "dashboard": {
+    "greeting": "Cześć",
+    "todayIs": "Dzisiaj jest",
+    "mit": "Główne priorytety",
+    "mitEmpty": "Dodaj do 3 najważniejszych zadań",
+    "todayTasks": "Zadania na dziś",
+    "noTasks": "Brak aktywnych zadań",
+    "events": "Wydarzenia",
+    "noEvents": "Brak wydarzeń na dziś",
+    "habits": "Nawyki",
+    "health": "Zdrowie",
+    "water": "Woda",
+    "glasses": "szklanek",
+    "sleep": "Sen",
+    "hours": "godz",
+    "mood": "Nastrój",
+    "completed": "Ukończone",
+    "pending": "Pozostało",
+    "weeklyOverview": "Przegląd tygodnia"
+  },
+  "tasks": {
+    "title": "Zadania",
+    "newTask": "Nowe zadanie",
+    "addTask": "Dodaj zadanie",
+    "taskTitle": "Nazwa zadania",
+    "description": "Opis",
+    "dueDate": "Termin",
+    "priority": "Priorytet",
+    "status": "Status",
+    "tags": "Tagi",
+    "project": "Projekt",
+    "markAsMit": "Oznacz jako priorytet",
+    "complete": "Zakończ",
+    "priorities": {
+      "low": "Niski",
+      "medium": "Średni",
+      "high": "Wysoki",
+      "urgent": "Pilny"
+    },
+    "statuses": {
+      "backlog": "Backlog",
+      "todo": "Do zrobienia",
+      "in_progress": "W trakcie",
+      "done": "Zrobione"
+    }
+  },
+  "calendar": {
+    "title": "Kalendarz",
+    "newEvent": "Nowe wydarzenie",
+    "event": "Wydarzenie",
+    "allDay": "Cały dzień",
+    "startTime": "Początek",
+    "endTime": "Koniec",
+    "location": "Miejsce",
+    "reminder": "Przypomnienie",
+    "repeat": "Powtórzenie",
+    "weekView": "Tydzień",
+    "monthView": "Miesiąc"
+  },
+  "finances": {
+    "title": "Finanse",
+    "income": "Dochód",
+    "expenses": "Wydatki",
+    "balance": "Saldo",
+    "budget": "Budżet",
+    "budgets": "Budżety",
+    "transactions": "Transakcje",
+    "subscriptions": "Subskrypcje",
+    "newTransaction": "Nowa transakcja",
+    "amount": "Kwota",
+    "category": "Kategoria",
+    "date": "Data",
+    "spent": "Wydano",
+    "remaining": "Pozostało",
+    "overBudget": "Przekroczono budżet"
+  },
+  "health": {
+    "title": "Zdrowie",
+    "sleep": "Sen",
+    "water": "Woda",
+    "mood": "Nastrój",
+    "energy": "Energia",
+    "weight": "Waga",
+    "addWater": "Dodaj wodę",
+    "logSleep": "Zapisz sen",
+    "logMood": "Zapisz nastrój",
+    "sleepQuality": "Jakość snu",
+    "moods": {
+      "1": "Fatalnie",
+      "2": "Źle",
+      "3": "Normalnie",
+      "4": "Dobrze",
+      "5": "Świetnie"
+    }
+  },
+  "habits": {
+    "title": "Nawyki",
+    "newHabit": "Nowy nawyk",
+    "streak": "Seria",
+    "days": "dni",
+    "completed": "Ukończone",
+    "frequency": "Częstotliwość",
+    "daily": "Codziennie",
+    "weekdays": "Dni robocze",
+    "weekends": "Weekendy",
+    "custom": "Wybrane dni"
+  },
+  "goals": {
+    "title": "Cele",
+    "newGoal": "Nowy cel",
+    "progress": "Postęp",
+    "shortTerm": "Krótkoterminowe",
+    "longTerm": "Długoterminowe",
+    "milestones": "Etapy",
+    "keyResults": "Kluczowe wyniki",
+    "startDate": "Data rozpoczęcia",
+    "targetDate": "Data docelowa",
+    "motivation": "Motywacja"
+  },
+  "notes": {
+    "title": "Notatki",
+    "newNote": "Nowa notatka",
+    "journal": "Dziennik",
+    "inbox": "Inbox",
+    "ideas": "Pomysły",
+    "quickNote": "Szybka notatka",
+    "pinned": "Przypięte",
+    "starred": "Ulubione"
+  },
+  "ai": {
+    "title": "Asystent AI",
+    "placeholder": "Zapytaj o coś...",
+    "modes": {
+      "general": "Ogólny",
+      "planDay": "Plan dnia",
+      "breakGoal": "Rozbij cel",
+      "weekSummary": "Podsumowanie tygodnia",
+      "antiProcrastination": "Antyprokrastynacja"
+    },
+    "generating": "Generuję odpowiedź..."
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "profile": "Profil",
+    "language": "Język",
+    "timezone": "Strefa czasowa",
+    "notifications": "Powiadomienia",
+    "telegram": "Telegram",
+    "weather": "Pogoda",
+    "city": "Miasto",
+    "theme": "Motyw",
+    "morningBriefing": "Poranny briefing",
+    "middayReminder": "Przypomnienie w południe",
+    "eveningCheckin": "Wieczorny check-in",
+    "weeklyReview": "Przegląd tygodniowy"
+  },
+  "weather": {
+    "feelsLike": "Odczuwalna",
+    "humidity": "Wilgotność",
+    "wind": "Wiatr"
+  },
+  "sidebar": {
+    "helpCenter": "Centrum pomocy",
+    "helpDesc": "Dokumentacja i FAQ",
+    "community": "Społeczność",
+    "updates": "Aktualizacje",
+    "updatesDesc": "Co nowego w LifeHub"
+  }
+}

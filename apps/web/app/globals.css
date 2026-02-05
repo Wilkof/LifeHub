@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-satoshi: 'Inter', system-ui, sans-serif;
+  --font-cabinet: 'Inter', system-ui, sans-serif;
+  
+  /* Colors from screenshot */
+  --color-sage: #c8d9bc;
+  --color-lime: #c8e972;
+  --color-dark: #262626;
+  --color-dark-lighter: #3d3d3d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-satoshi);
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-sage-300 text-dark-900 antialiased;
+  min-height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-dark-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-400;
+}
+
+/* Custom component styles */
+@layer components {
+  .card {
+    @apply bg-white rounded-3xl p-6 shadow-card transition-shadow duration-200;
+  }
+  
+  .card:hover {
+    @apply shadow-card-hover;
+  }
+  
+  .card-dark {
+    @apply bg-dark-800 text-white rounded-3xl p-6;
+  }
+  
+  .card-lime {
+    @apply bg-lime-500 rounded-3xl p-6 text-dark-900;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-xl font-medium transition-all duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-dark-900 text-white hover:bg-dark-800;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-dark-900 hover:bg-sage-100;
+  }
+  
+  .btn-lime {
+    @apply bg-lime-500 text-dark-900 hover:bg-lime-400;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-dark-200 bg-white
+           focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent
+           transition-all duration-200;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-dark-400
+           hover:bg-dark-700 hover:text-white transition-all duration-200 cursor-pointer;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-lime-500 text-dark-900 font-medium;
+  }
+  
+  .stat-bar {
+    @apply h-full rounded-full transition-all duration-500;
+    background: linear-gradient(180deg, var(--color-lime) 0%, #a3c944 100%);
+  }
+  
+  .pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .pill-lime {
+    @apply bg-lime-100 text-lime-800;
+  }
+  
+  .pill-dark {
+    @apply bg-dark-800 text-white;
+  }
+  
+  /* Tab styles like in screenshot */
+  .tab {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
+  }
+  
+  .tab-inactive {
+    @apply bg-transparent text-dark-600 hover:bg-dark-100;
+  }
+  
+  .tab-active {
+    @apply bg-dark-900 text-white;
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  .animate-delay-400 {
+    animation-delay: 400ms;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+}
