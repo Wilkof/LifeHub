@@ -1,4 +1,5 @@
 """Telegram webhook router."""
+# pyright: reportMissingImports=false
 from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.orm import Session
 
@@ -27,9 +28,10 @@ async def telegram_webhook(request: Request, db: Session = Depends(get_db)):
 @router.get("/setup")
 async def setup_webhook():
     """Get webhook setup instructions."""
+    base_url = settings.backend_url or settings.frontend_url
     return {
         "message": "Set webhook URL in Telegram BotFather",
-        "webhook_url": f"{settings.frontend_url.replace('localhost:3000', 'your-render-api.onrender.com')}/api/telegram/webhook",
+        "webhook_url": f"{base_url}/api/telegram/webhook",
         "instructions": [
             "1. Open Telegram and find @BotFather",
             "2. Send /setwebhook",

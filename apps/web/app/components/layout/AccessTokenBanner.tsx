@@ -1,17 +1,21 @@
-\'use client\';
-\n+import { useEffect, useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { api } from '@/app/lib/api';
 import { cn } from '@/app/lib/utils';
-\n+export default function AccessTokenBanner() {
+
+export default function AccessTokenBanner() {
   const [token, setToken] = useState('');
   const [storedToken, setStoredToken] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-\n+  useEffect(() => {
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       setStoredToken(localStorage.getItem('lifehub_token'));
     }
   }, []);
-\n+  const handleSave = () => {
+
+  const handleSave = () => {
     if (!token.trim()) {
       setMessage('Введіть токен доступу.');
       return;
@@ -21,15 +25,18 @@ import { cn } from '@/app/lib/utils';
     setToken('');
     setMessage('Токен збережено.');
   };
-\n+  const handleClear = () => {
+
+  const handleClear = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('lifehub_token');
     }
     setStoredToken(null);
     setMessage('Токен очищено.');
   };
-\n+  if (storedToken) return null;
-\n+  return (
+
+  if (storedToken) return null;
+
+  return (
     <div className="mb-4 rounded-2xl bg-lime-100 border border-lime-300 p-4">
       <div className="text-sm font-medium text-dark-900 mb-2">
         Потрібен токен доступу (APP_ACCESS_TOKEN), щоб підключити бекенд.

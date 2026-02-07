@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getRequestConfig } from 'next-intl/server';
+import { getRequestConfig, type GetRequestConfigParams } from 'next-intl/server';
 
 export const locales = ['ua', 'pl'] as const;
 export type Locale = (typeof locales)[number];
@@ -9,7 +9,7 @@ export const localeNames: Record<Locale, string> = {
   pl: 'Polski',
 };
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ locale }: GetRequestConfigParams) => {
   if (!locales.includes(locale as Locale)) notFound();
 
   return {

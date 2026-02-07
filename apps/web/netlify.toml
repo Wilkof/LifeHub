@@ -11,6 +11,6 @@
 
 [[redirects]]
   from = "/api/*"
-  to = ":NEXT_PUBLIC_API_URL/api/:splat"
+  to = "$NEXT_PUBLIC_API_URL/api/:splat"
   status = 200
   force = true

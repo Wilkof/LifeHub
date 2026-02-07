@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     
     # CORS
     frontend_url: str = "http://localhost:3000"
+
+    # Backend (public API base URL, e.g. https://your-api.onrender.com)
+    backend_url: str = "http://localhost:8000"
     
     # Timezone
     timezone: str = "Europe/Warsaw"

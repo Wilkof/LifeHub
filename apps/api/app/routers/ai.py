@@ -1,4 +1,5 @@
 """AI Assistant API router."""
+# pyright: reportMissingImports=false
 from datetime import date, datetime, timedelta
 from typing import Optional, List
 from pydantic import BaseModel
@@ -40,6 +41,9 @@ async def chat(
     """Chat with AI assistant."""
     # Get user context from database
     context = await get_user_context(db, request.mode)
+    if request.context:
+        # Allow caller-provided context to extend/override defaults
+        context = {**context, **request.context}
     
     # Generate response
     response = await ai_service.chat(

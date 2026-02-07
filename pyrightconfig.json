@@ -1,0 +1,10 @@
+{
+  "executionEnvironments": [
+    {
+      "root": "apps/api",
+      "venvPath": "apps/api",
+      "venv": "venv",
+      "extraPaths": ["apps/api/venv/lib/python3.9/site-packages"]
+    }
+  ]
+}
